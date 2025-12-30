@@ -1,0 +1,19 @@
+name: text_classifier_env
+channels:
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pytorch
+  - cpuonly
+  - pandas
+  - scikit-learn
+  - transformers
+  - openpyxl          # <--- Ajouté pour lire les fichiers Excel
+  - pip
+  - pip:
+    - mlflow
+    - torchtext
+    - pytorch-lightning # <--- Indispensable pour votre code
+    - torchmetrics      # <--- Indispensable pour votre code
+    - matplotlib        # Pour les graphiques d'explicabilité

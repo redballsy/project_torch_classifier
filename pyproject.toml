@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "torchTextClassifiers"
+version = "0.1.0"
+description = "Classification de métiers CITP avec PyTorch"
+dependencies = [
+    "torch",
+    "pytorch-lightning",
+    "torchmetrics",
+    "mlflow",
+    "pandas"
+]
+
+[tool.setuptools]
+packages = ["torchTestClassifiers"]

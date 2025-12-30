@@ -1,0 +1,17 @@
+# Environnement virtuel
+text_classifier_env/
+venv/
+.env
+
+# Modèles et données (Trop lourds / Confidentiels)
+models/
+lightning_logs/
+*.ckpt
+*.xlsx
+*.csv
+modelsfastext/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

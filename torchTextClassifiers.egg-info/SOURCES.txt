@@ -1,0 +1,7 @@
+pyproject.toml
+torchTestClassifiers/__init__.py
+torchTextClassifiers.egg-info/PKG-INFO
+torchTextClassifiers.egg-info/SOURCES.txt
+torchTextClassifiers.egg-info/dependency_links.txt
+torchTextClassifiers.egg-info/requires.txt
+torchTextClassifiers.egg-info/top_level.txt

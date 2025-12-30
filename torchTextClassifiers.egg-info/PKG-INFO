@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: torchTextClassifiers
+Version: 0.1.0
+Summary: Classification de métiers CITP avec PyTorch
+Requires-Dist: torch
+Requires-Dist: pytorch-lightning
+Requires-Dist: torchmetrics
+Requires-Dist: mlflow
+Requires-Dist: pandas
