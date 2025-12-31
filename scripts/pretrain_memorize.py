@@ -5,7 +5,7 @@ import torch
 import fasttext
 
 # Chemins
-PATH_EXCEL = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\pretrain\citp_six_positions_nomenclature.xlsx"
+PATH_EXCEL = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\pretrain\CITP_08.xlsx"
 PATH_FASTTEXT = r"C:\Users\Sy Savane Idriss\project_torch_classifier\modelsfastext\cc.fr.300.bin"
 
 def pretrain():

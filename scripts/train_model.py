@@ -6,7 +6,7 @@ import torch
 import fasttext
 import os
 
-PATH_EXCEL = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\citp_six_positions_nomenclature.xlsx"
+PATH_EXCEL = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\CITP_08.xlsx"
 PATH_FASTTEXT = r"C:\Users\Sy Savane Idriss\project_torch_classifier\modelsfastext\cc.fr.300.bin"
 
 def train():
