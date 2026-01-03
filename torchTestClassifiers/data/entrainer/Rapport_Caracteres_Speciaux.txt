@@ -1,0 +1,19 @@
+=== RAPPORT: REMPLACEMENT DES CODES POUR CARACTÈRES SPÉCIAUX ===
+
+Fichier source: C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\CNPS_Code_NC.xlsx
+Date d'analyse: 2026-01-03 15:17:11.573992
+Total lignes analysées: 82070
+Lignes modifiées: 2
+Pourcentage: 0.00%
+
+=== EXEMPLES DE MODIFICATIONS ===
+Ligne 29780: ID 8
+  Nomenclature: '+'
+  Ancien code: 3322 → Nouveau: 'NC'
+  Code '3322' remplacé par 'NC'
+
+Ligne 29781: ID 46
+  Nomenclature: '-+'
+  Ancien code: 3322 → Nouveau: 'NC'
+  Code '3322' remplacé par 'NC'
+

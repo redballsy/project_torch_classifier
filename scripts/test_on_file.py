@@ -13,7 +13,7 @@ PATH_TRAIN_DATA = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTest
 PATH_ISCO_REF = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\pretrain\CITP_08.xlsx"
 
 PATH_NEW_FILE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\tester_Codifications_Professions CNPS_vf.xlsx"
-OUTPUT_FILE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\nouveau_vf.xlsx"
+OUTPUT_FILE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\no_vf.xlsx"
 
 def fill_empty_codes():
     print("⏳ Étape 1 : Chargement des dictionnaires...")

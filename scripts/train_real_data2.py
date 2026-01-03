@@ -10,11 +10,38 @@ from torchTestClassifiers.data.datamodule import CITPDataModule
 
 # Chemins
 PATH_PRETRAIN_DATA = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\pretrain\CITP_08.xlsx"
-PATH_REAL_DATA = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\CNPS_Nettoyer2_Final.xlsx"
+PATH_REAL_DATA = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\fichier_A_entrainer.xlsx"
 PATH_PRETRAINED_MODEL = r"C:\Users\Sy Savane Idriss\project_torch_classifier\models\pretrained_memory.ckpt"
 PATH_MEMORY = r"C:\Users\Sy Savane Idriss\project_torch_classifier\models\vocab_memory.pkl"
 PATH_FASTTEXT_FR = r"C:\Users\Sy Savane Idriss\project_torch_classifier\modelsfastext\cc.fr.300.bin"
 SAVE_PATH = r"C:\Users\Sy Savane Idriss\project_torch_classifier\models\fine_tuned_model.ckpt"
+
+class EnhancedCITPClassifier(CITPClassifier):
+    """Version améliorée avec validation accuracy"""
+    
+    def __init__(self, num_classes, vocab_size, pretrained_vectors):
+        # Extraire la dimension d'embedding du tensor pretrained_vectors
+        embedding_dim = pretrained_vectors.size(1)
+        super().__init__(num_classes, vocab_size, embedding_dim)
+        
+        # Charger les poids pré-entraînés dans l'embedding
+        self.embedding.weight.data.copy_(pretrained_vectors)
+    
+    def validation_step(self, batch, batch_idx):
+        """Étape de validation avec calcul d'accuracy"""
+        x, y = batch
+        y_hat = self(x)
+        loss = self.loss_fn(y_hat, y)
+        
+        # Calculer l'accuracy manuellement
+        preds = torch.argmax(y_hat, dim=1)
+        accuracy = (preds == y).float().mean()
+        
+        # Logguer les métriques
+        self.log('val_loss', loss, prog_bar=True, on_step=False, on_epoch=True)
+        self.log('val_acc', accuracy, prog_bar=True, on_step=False, on_epoch=True)
+        
+        return loss
 
 def fine_tune_simple():
     """Version simplifiée du fine-tuning"""
@@ -51,9 +78,15 @@ def fine_tune_simple():
         except:
             new_vectors[i] = torch.randn(300)
     
-    # 5. Créer le modèle
+    # 5. Créer le modèle amélioré
     print(f"🏗️ Création du modèle ({dm.num_classes} classes)...")
-    model = CITPClassifier(
+    
+    # Vérifier les dimensions
+    print(f"  Vocab size: {len(dm.vocab)}")
+    print(f"  Embedding dimension: {new_vectors.size(1)}")
+    print(f"  Num classes: {dm.num_classes}")
+    
+    model = EnhancedCITPClassifier(
         num_classes=dm.num_classes,
         vocab_size=len(dm.vocab),
         pretrained_vectors=new_vectors
@@ -69,29 +102,39 @@ def fine_tune_simple():
         filename="model-{epoch:02d}-{val_acc:.3f}",
         monitor="val_acc",
         mode="max",
-        save_top_k=2
+        save_top_k=2,
+        verbose=True
     )
     
     early_stop_callback = pl.callbacks.EarlyStopping(
         monitor="val_loss",
         patience=5,
-        mode="min"
+        mode="min",
+        verbose=True
     )
+    
+    progress_bar = pl.callbacks.TQDMProgressBar(refresh_rate=10)
     
     trainer = pl.Trainer(
         max_epochs=30,
         accelerator="cpu",
         devices=1,
-        callbacks=[checkpoint_callback, early_stop_callback],
+        callbacks=[checkpoint_callback, early_stop_callback, progress_bar],
         log_every_n_steps=5,
-        enable_progress_bar=True
+        enable_progress_bar=True,
+        enable_model_summary=True,
+        num_sanity_val_steps=0
     )
     
     # 7. Entraînement
     print("\n🎯 Début de l'entraînement...")
     trainer.fit(model, datamodule=dm)
     
-    # 8. Sauvegarde
+    # 8. Afficher les meilleures métriques
+    print("\n📈 MEILLEURES MÉTRIQUES :")
+    print(f"Best validation accuracy: {checkpoint_callback.best_model_score:.3f}")
+    
+    # 9. Sauvegarde
     print("\n💾 Sauvegarde...")
     trainer.save_checkpoint(SAVE_PATH)
     
@@ -99,25 +142,43 @@ def fine_tune_simple():
     torch.save({
         'model_state_dict': model.state_dict(),
         'vocab': dm.vocab,
-        'num_classes': dm.num_classes
+        'num_classes': dm.num_classes,
+        'val_accuracy': checkpoint_callback.best_model_score
     }, SAVE_PATH.replace('.ckpt', '.pt'))
     
     print(f"\n✅ Fine-tuning terminé !")
     print(f"📁 Modèle: {SAVE_PATH}")
     
-    return model
+    return model, checkpoint_callback.best_model_score
 
 if __name__ == "__main__":
     print("⚠️ Version simplifiée - sans transfert de prétrain")
-    model = fine_tune_simple()
+    model, best_acc = fine_tune_simple()
     
     if model:
         print("\n" + "=" * 70)
         print("✨ ENTRAÎNEMENT RÉUSSI !")
         print("=" * 70)
         
-        print(f"\n📊 Modèle final:")
+        print(f"\n📊 RÉSULTATS FINAUX:")
         print(f"  - Classes: {model.num_classes if hasattr(model, 'num_classes') else 'N/A'}")
         print(f"  - Vocabulaire: {len(model.vocab) if hasattr(model, 'vocab') else len(dm.vocab)}")
+        print(f"  - Best validation accuracy: {best_acc:.3f}")
+        
+        print("\n🧪 Test rapide du modèle...")
+        dm = CITPDataModule(data_path=PATH_REAL_DATA, batch_size=32)
+        dm.setup()
+        
+        val_loader = dm.val_dataloader()
+        batch = next(iter(val_loader))
+        x, y = batch
+        
+        with torch.no_grad():
+            model.eval()
+            y_hat = model(x)
+            preds = torch.argmax(y_hat, dim=1)
+            accuracy = (preds == y).float().mean()
+            print(f"  - Test batch accuracy: {accuracy:.3f}")
+        
     else:
         print("\n❌ L'entraînement a échoué.")

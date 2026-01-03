@@ -1,0 +1,9 @@
+1- CNPS_A_Nettoyer.xlsx
+2- CNPS_Cleaned_numerique.xlsx
+3- CNPS_Code_NC.xlsx
+4- CNPS_Lettres_Uniques_NC.xlsx
+5- CNPS_Nomenclatures_Nettoyees.xlsx
+6- CNPS_Patterns_Lettres_NC.xlsx
+7- CNPS_Special_Chars_NC.xlsx 
+8- CNPS_Patterns_Minuscules_NC.xlsx
+9- CNPS_Patterns_T_DE_S_NC.xlsx
