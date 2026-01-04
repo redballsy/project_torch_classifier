@@ -8,12 +8,12 @@ from torchTestClassifiers.data.datamodule import CITPDataModule
 PATH_MODEL_FT = r"C:\Users\Sy Savane Idriss\project_torch_classifier\models\fine_tuned_model.ckpt"
 
 # ATTENTION : On utilise le fichier CNPS pour le vocabulaire car c'est celui utilisé pour le Fine-Tuning
-PATH_TRAIN_DATA = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\JOB1_Codifications_Professions CNPS_vf.xlsx"
+PATH_TRAIN_DATA = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\fichier_A_entrainer.xlsx"
 # On garde le fichier ISCO uniquement pour traduire l'index de sortie en Code (ex: 1 -> "2141")
 PATH_ISCO_REF = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\pretrain\CITP_08.xlsx"
 
-PATH_NEW_FILE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\tester_Codifications_Professions CNPS_vf.xlsx"
-OUTPUT_FILE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\no_vf.xlsx"
+PATH_NEW_FILE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\JOB1_Codifications_Professions CNPS_vf.xlsx"
+OUTPUT_FILE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\test_prediction_des_codes_vf.xlsx"
 
 def fill_empty_codes():
     print("⏳ Étape 1 : Chargement des dictionnaires...")
