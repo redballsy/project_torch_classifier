@@ -1,0 +1,19 @@
+Ces fichiers ont été nettoyés ou modifié dans l'ordre pour des trainings et testes
+
+
+1- CNPS_A_Nettoyer.xlsx
+2- CNPS_Cleaned_numerique.xlsx
+3- CNPS_Code_NC.xlsx
+4- CNPS_Lettres_Uniques_NC.xlsx
+5- CNPS_Nomenclatures_Nettoyees.xlsx
+6- CNPS_Patterns_Lettres_NC.xlsx
+7- CNPS_Special_Chars_NC.xlsx 
+8- CNPS_Patterns_Minuscules_NC.xlsx
+9- CNPS_Patterns_T_DE_S_NC.xlsx
+10-fichier_A_Ne_pas_entrainer_avec_ID.xlsx (pas utile)
+11-fichier_A_entrainer.xlsx
+12-entrainer2.xlsx (training)
+13-entrainer2_propre.xlsx (dernier training) -reference
+14-propre.xlsx (dernier teste) -reference
+
+NB: les données ont été reduite pour accélérer l'entraînement car ils coûtaient beaucoups de temps.
