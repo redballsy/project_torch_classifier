@@ -1,7 +1,7 @@
 === RAPPORT: REMPLACEMENT DES CODES POUR CARACTÈRES SPÉCIAUX ===
 
 Fichier source: C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\CNPS_Code_NC.xlsx
-Date d'analyse: 2026-01-03 15:17:11.573992
+Date d'analyse: 2026-01-06 11:47:15.753664
 Total lignes analysées: 82070
 Lignes modifiées: 2
 Pourcentage: 0.00%

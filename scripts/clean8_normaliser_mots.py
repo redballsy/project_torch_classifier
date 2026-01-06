@@ -24,8 +24,8 @@ def nettoyer_texte(texte):
     return texte
 
 # --- CONFIGURATION DES CHEMINS ---
-PATH_ENTREE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\entrainer2.xlsx"
-PATH_SORTIE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\entrainer2_propre.xlsx"
+PATH_ENTREE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\CNPS_Patterns_T_DE_S_NC.xlsx"
+PATH_SORTIE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\entrainer_propre.xlsx"
 
 print("⏳ Lecture du fichier...")
 df = pd.read_excel(PATH_ENTREE)
