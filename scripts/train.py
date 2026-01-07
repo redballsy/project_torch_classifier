@@ -1,4 +1,3 @@
-# train.py - Version avec correction Oversampling
 import os
 import pandas as pd
 import torch
@@ -8,17 +7,22 @@ import numpy as np
 from torch.utils.data import Dataset, DataLoader
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+import sys
 import warnings
 
 warnings.filterwarnings('ignore')
 
 # ============================================
-# Configuration des chemins locaux
+# Configuration Dynamique des Chemins
 # ============================================
-FASTTEXT_MODEL_PATH = r"C:\Users\Sy Savane Idriss\project_torch_classifier\modelsfastext\cc.fr.300.bin"
-BASE_DIR = r"C:\Users\Sy Savane Idriss\project_torch_classifier"
-DATA_DIR = os.path.join(BASE_DIR, "torchTestClassifiers", "data", "entrainer")
-TRAIN_DATA_PATH = os.path.join(DATA_DIR, "entrainer2_propre.xlsx")
+CURRENT_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(CURRENT_SCRIPT_DIR)
+
+# Sur GitHub Actions, on peut stocker le modèle fasttext dans un dossier spécifique
+FASTTEXT_MODEL_PATH = os.path.join(BASE_DIR, "models_fasttext", "cc.fr.300.bin")
+# Chemin du fichier de données final généré par le pipeline
+TRAIN_DATA_PATH = os.path.join(BASE_DIR, "torchTestClassifiers", "data", "entrainer", "entrainer2_propre.xlsx")
+# Chemin de sauvegarde du modèle PyTorch
 SAVED_MODEL_PATH = os.path.join(BASE_DIR, "models", "citp_classifier_model.pth")
 
 os.makedirs(os.path.dirname(SAVED_MODEL_PATH), exist_ok=True)
@@ -26,14 +30,14 @@ os.makedirs(os.path.dirname(SAVED_MODEL_PATH), exist_ok=True)
 # ============================================
 # 1. Classe Dataset
 # ============================================
-
 class CITPDataset(Dataset):
     def __init__(self, dataframe, ft_model, label_encoder):
         self.embeddings = []
         self.labels = label_encoder.transform(dataframe['code'].astype(str))
         
-        print(f"Calcul des vecteurs pour {len(dataframe)} lignes...")
+        print(f"Vectorisation de {len(dataframe)} lignes...")
         for text in dataframe['nomenclature']:
+            # Utilisation du modèle FastText pour transformer le texte en vecteur 300d
             vector = ft_model.get_sentence_vector(str(text).lower().strip())
             self.embeddings.append(vector)
 
@@ -47,7 +51,7 @@ class CITPDataset(Dataset):
         }
 
 # ============================================
-# 2. Architecture du Classifieur
+# 2. Architecture du Classifieur (Deep Learning)
 # ============================================
 
 class CITPClassifier(nn.Module):
@@ -67,58 +71,50 @@ class CITPClassifier(nn.Module):
         return self.network(x)
 
 # ============================================
-# 3. Script d'entraînement avec OVERSAMPLING
+# 3. Fonction d'entraînement
 # ============================================
-
 def train_main():
-    print(f"🧠 Chargement du modèle FastText local...")
+    print(f"🧠 Chargement du modèle FastText...")
     if not os.path.exists(FASTTEXT_MODEL_PATH):
-        print(f"❌ Erreur : Fichier introuvable à {FASTTEXT_MODEL_PATH}")
-        return
+        print(f"❌ Erreur : Modèle FastText introuvable à {FASTTEXT_MODEL_PATH}")
+        sys.exit(1)
+        
     ft_model = fasttext.load_model(FASTTEXT_MODEL_PATH)
     
-    print(f"📖 Chargement des données Excel...")
+    print(f"📖 Lecture des données : {os.path.basename(TRAIN_DATA_PATH)}")
     df = pd.read_excel(TRAIN_DATA_PATH)
     
-    # --- ÉTAPE OVERSAMPLING POUR CLASSES UNIQUES ---
-    # On compte les répétitions de chaque code
+    # --- OVERSAMPLING pour la stratification ---
     counts = df['code'].value_counts()
-    # On identifie les codes qui n'apparaissent qu'une seule fois
     rare_classes = counts[counts < 2].index
-    
     if len(rare_classes) > 0:
-        print(f"⚠️ {len(rare_classes)} classes rares détectées. Application de l'oversampling...")
-        # On duplique ces lignes une fois pour qu'elles aient au moins 2 membres
+        print(f"⚖️ Équilibrage des classes rares ({len(rare_classes)} détectées)...")
         df_rare = df[df['code'].isin(rare_classes)]
         df = pd.concat([df, df_rare], ignore_index=True)
     
-    # Encodage des labels avant le split pour assurer la cohérence
+    # Encodage
     le = LabelEncoder()
     df['code_str'] = df['code'].astype(str)
     le.fit(df['code_str'])
     
-    # Séparation avec stratification (maintenant possible grâce à l'oversampling)
+    # Split
     train_df, val_df = train_test_split(
-        df, 
-        test_size=0.2, 
-        random_state=42, 
-        stratify=df['code_str']
+        df, test_size=0.2, random_state=42, stratify=df['code_str']
     )
     
-    # Préparation des DataLoaders
     train_dataset = CITPDataset(train_df, ft_model, le)
     val_dataset = CITPDataset(val_df, ft_model, le)
     
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=32)
     
-    # Configuration du modèle
+    # Init Modèle
     num_classes = len(le.classes_)
     model = CITPClassifier(300, num_classes)
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.001)
     criterion = nn.CrossEntropyLoss()
     
-    print(f"🚀 Entraînement sur {len(train_df)} exemples...")
+    print(f"🚀 Début de l'entraînement ({num_classes} classes)...")
     
     for epoch in range(50):
         model.train()
@@ -134,7 +130,7 @@ def train_main():
         if (epoch + 1) % 10 == 0:
             print(f"Époque {epoch+1}/50 | Loss: {total_loss/len(train_loader):.4f}")
 
-    # Sauvegarde
+    # Sauvegarde finale
     torch.save({
         'model_state_dict': model.state_dict(),
         'label_encoder': le,
@@ -142,7 +138,7 @@ def train_main():
         'num_classes': num_classes
     }, SAVED_MODEL_PATH)
     
-    print(f"✅ Succès ! Modèle sauvegardé dans : {SAVED_MODEL_PATH}")
+    print(f"✅ Modèle sauvegardé avec succès dans : {SAVED_MODEL_PATH}")
 
 if __name__ == "__main__":
     train_main()

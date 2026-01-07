@@ -1,6 +1,8 @@
 import pandas as pd
 import unicodedata
 import re
+import os
+import sys
 
 def nettoyer_texte(texte):
     if not isinstance(texte, str):
@@ -10,7 +12,6 @@ def nettoyer_texte(texte):
     texte = texte.lower()
     
     # 2. Suppression des accents (Normalisation Unicode)
-    # Exemple: "Ingénieur" -> "Ingenieur"
     texte = unicodedata.normalize('NFD', texte)
     texte = "".join([c for c in texte if unicodedata.category(c) != 'Mn'])
     
@@ -23,23 +24,38 @@ def nettoyer_texte(texte):
     
     return texte
 
-# --- CONFIGURATION DES CHEMINS ---
-PATH_ENTREE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\CNPS_Patterns_T_DE_S_NC.xlsx"
-PATH_SORTIE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\entrainer_propre.xlsx"
+# --- CONFIGURATION AUTOMATIQUE DES CHEMINS ---
+current_script_dir = os.path.dirname(os.path.abspath(__file__))
+base_dir = os.path.dirname(current_script_dir)
 
-print("⏳ Lecture du fichier...")
+# Fichier d'entrée (le résultat du script précédent)
+PATH_ENTREE = os.path.join(base_dir, "torchTestClassifiers", "data", "entrainer", "CNPS_Patterns_T_DE_S_NC.xlsx")
+# Fichier de sortie final pour l'entraînement
+PATH_SORTIE = os.path.join(base_dir, "torchTestClassifiers", "data", "entrainer", "entrainer_propre.xlsx")
+
+# --- TRAITEMENT ---
+if not os.path.exists(PATH_ENTREE):
+    print(f"❌ Erreur : Le fichier source est introuvable : {PATH_ENTREE}")
+    sys.exit(1)
+
+print(f"⏳ Lecture du fichier : {os.path.basename(PATH_ENTREE)}")
 df = pd.read_excel(PATH_ENTREE)
 
 if 'nomenclature' in df.columns:
-    print("🧹 Nettoyage de la colonne 'nomenclature'...")
-    # Applique la fonction de nettoyage
+    print("🧹 Normalisation (minuscules, accents, ponctuation)...")
     df['nomenclature'] = df['nomenclature'].apply(nettoyer_texte)
     
-    # Optionnel : Supprimer les lignes qui se retrouveraient vides après nettoyage
-    df = df[df['nomenclature'] != ""]
+    # Suppression des lignes vides après nettoyage
+    avant = len(df)
+    df = df[df['nomenclature'].str.strip() != ""]
+    apres = len(df)
     
-    print(f"💾 Sauvegarde du fichier nettoyé vers : {PATH_SORTIE}")
+    if avant != apres:
+        print(f"🗑️ {avant - apres} lignes vides supprimées.")
+
+    print(f"💾 Sauvegarde finale : {PATH_SORTIE}")
     df.to_excel(PATH_SORTIE, index=False)
-    print("✅ Terminé !")
+    print("✅ Normalisation terminée avec succès !")
 else:
-    print("❌ Erreur : La colonne 'nomenclature' est introuvable dans le fichier.")
+    print("❌ Erreur : Colonne 'nomenclature' introuvable.")
+    sys.exit(1)
