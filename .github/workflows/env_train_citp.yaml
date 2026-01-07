@@ -1,19 +1,33 @@
-name: text_classifier_env
-channels:
-  - pytorch
-  - conda-forge
-dependencies:
-  - python=3.9
-  - pytorch
-  - cpuonly
-  - pandas
-  - scikit-learn
-  - transformers
-  - openpyxl          # <--- Ajouté pour lire les fichiers Excel
-  - pip
-  - pip:
-    - mlflow
-    - torchtext
-    - pytorch-lightning # <--- Indispensable pour votre code
-    - torchmetrics      # <--- Indispensable pour votre code
-    - matplotlib        # Pour les graphiques d'explicabilité
+name: Train CITP Model
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # Installation des bibliothèques listées dans votre fichier Conda
+        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+        pip install pandas scikit-learn transformers openpyxl mlflow torchtext pytorch-lightning torchmetrics matplotlib fasttext
+
+    - name: Run Training
+      run: |
+        # On lance le script. 
+        # ATTENTION : Vos chemins de fichiers dans train.py doivent être relatifs (ex: data/propre.xlsx)
+        python scripts/train.py
