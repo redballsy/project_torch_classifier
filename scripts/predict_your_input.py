@@ -4,8 +4,11 @@ import fasttext
 import os
 import torch.nn as nn
 
-# Configuration des chemins
-BASE_DIR = r"C:\Users\Sy Savane Idriss\project_torch_classifier"
+# 1. On trouve où se situe le script actuel dynamiquement
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# 2. On construit le chemin à partir de là
+chemin_fichier = os.path.join(BASE_DIR, "data", "entrainer", "CNPS_Code_NC.xlsx")
 FASTTEXT_MODEL_PATH = os.path.join(BASE_DIR, "modelsfastext", "cc.fr.300.bin")
 SAVED_MODEL_PATH = os.path.join(BASE_DIR, "models", "citp_classifier_model.pth")
 

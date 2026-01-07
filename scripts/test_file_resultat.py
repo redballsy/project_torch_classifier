@@ -10,14 +10,30 @@ from tqdm import tqdm
 # CONFIGURATION DES CHEMINS (CORRIGÉE)
 # ============================================
 # On utilise r"" pour éviter l'erreur 'unicodeescape'
-BASE_DIR = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\resultat"
-FASTTEXT_MODEL_PATH = r"C:\Users\Sy Savane Idriss\project_torch_classifier\modelsfastext\cc.fr.300.bin"
-SAVED_MODEL_PATH = r"C:\Users\Sy Savane Idriss\project_torch_classifier\models\citp_classifier_model.pth"
+import os
 
-# Chemin exact de ton fichier Excel
-INPUT_FILE = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\propre.xlsx"
-OUTPUT_FILE = os.path.join(BASE_DIR, "propre_predit.xlsx")
+# 1. On définit la racine du projet dynamiquement
+# Cette commande trouve automatiquement le dossier où se trouve le script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# 2. Configuration des chemins RELATIFS
+# On part de la racine du projet pour descendre dans les dossiers
+FASTTEXT_MODEL_PATH = os.path.join(BASE_DIR, "modelsfastext", "cc.fr.300.bin")
+SAVED_MODEL_PATH = os.path.join(BASE_DIR, "models", "citp_classifier_model.pth")
+
+# Dossier de données
+DATA_DIR = os.path.join(BASE_DIR, "torchTestClassifiers", "data")
+
+# Chemin du fichier Excel (Entrée)
+INPUT_FILE = os.path.join(DATA_DIR, "entrainer", "propre.xlsx")
+
+# Chemin du fichier résultat (Sortie)
+# On s'assure que le dossier 'resultat' existe
+RESULT_DIR = os.path.join(DATA_DIR, "resultat")
+if not os.path.exists(RESULT_DIR):
+    os.makedirs(RESULT_DIR)
+
+OUTPUT_FILE = os.path.join(RESULT_DIR, "propre_predit.xlsx")
 # ============================================
 # ARCHITECTURE DU MODÈLE
 # ============================================

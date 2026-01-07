@@ -2,8 +2,12 @@ import pandas as pd
 import re
 import os
 
+# 1. On trouve où se situe le script actuel
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# 2. On construit le chemin à partir de là
 # Chemin complet vers votre fichier Excel
-chemin_fichier = r"C:\Users\Sy Savane Idriss\project_torch_classifier\torchTestClassifiers\data\entrainer\CNPS_Code_NC.xlsx"
+chemin_fichier = os.path.join(BASE_DIR, "data", "entrainer", "CNPS_Code_NC.xlsx")
 
 # Vérifier si le fichier existe
 if not os.path.exists(chemin_fichier):
