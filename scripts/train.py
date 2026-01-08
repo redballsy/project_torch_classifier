@@ -25,7 +25,6 @@ if not hasattr(np, "_core"):
 warnings.filterwarnings('ignore')
 
 # CONFIGURATION MLFLOW DYNAMIQUE
-# On vérifie si on est sur GitHub Actions
 IS_GITHUB = os.getenv('GITHUB_ACTIONS') == 'true'
 
 if not IS_GITHUB:
@@ -48,20 +47,71 @@ SAVED_MODEL_PATH = os.path.join(BASE_DIR, "models", "citp_classifier_model.pth")
 
 os.makedirs(os.path.dirname(SAVED_MODEL_PATH), exist_ok=True)
 
-# [Classes CITPDataset et CITPClassifier restent identiques...]
+# ============================================
+# 1. Classe Dataset
+# ============================================
+class CITPDataset(Dataset):
+    def __init__(self, dataframe, ft_model, label_encoder):
+        self.embeddings = []
+        labels_str = dataframe['code'].astype(str).tolist()
+        self.labels = label_encoder.transform(labels_str)
+        
+        print(f"Vectorisation de {len(dataframe)} lignes...")
+        for text in dataframe['nomenclature']:
+            clean_text = str(text).lower().strip().replace("\n", " ")
+            vector = ft_model.get_sentence_vector(clean_text)
+            self.embeddings.append(vector)
 
+    def __len__(self): return len(self.embeddings)
+    
+    def __getitem__(self, idx):
+        return {
+            'embedding': torch.FloatTensor(self.embeddings[idx]),
+            'label': torch.tensor(self.labels[idx], dtype=torch.long)
+        }
+
+# ============================================
+# 2. Architecture du Classifieur
+# ============================================
+class CITPClassifier(nn.Module):
+    def __init__(self, input_dim, num_classes):
+        super(CITPClassifier, self).__init__()
+        self.network = nn.Sequential(
+            nn.Linear(input_dim, 512),
+            nn.BatchNorm1d(512),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Linear(256, num_classes)
+        )
+        
+    def forward(self, x):
+        return self.network(x)
+
+# ============================================
+# 3. Fonction d'entraînement
+# ============================================
 def train_main():
-    # Sur GitHub, on ne lance pas de start_run vers localhost pour éviter les erreurs de connexion
-    # On utilise MLflow en mode "local" qui écrit dans un dossier ./mlruns
     with mlflow.start_run(run_name="Training_CITP_Torch"):
         print(f"🧠 Chargement du modèle FastText...")
         ft_model = fasttext.load_model(FASTTEXT_MODEL_PATH)
         
         df = pd.read_excel(TRAIN_DATA_PATH).dropna(subset=['code', 'nomenclature'])
-        le = LabelEncoder()
         df['code_str'] = df['code'].astype(str)
+
+        # --- AJOUT DU FILTRAGE POUR LA STRATIFICATION ---
+        counts = df['code_str'].value_counts()
+        valid_classes = counts[counts >= 2].index
+        
+        if len(valid_classes) < len(counts):
+            print(f"⚠️ Suppression de {len(counts) - len(valid_classes)} classes orphelines (n=1)")
+            df = df[df['code_str'].isin(valid_classes)].reset_index(drop=True)
+
+        le = LabelEncoder()
         le.fit(df['code_str'])
         
+        # Split stratifié sécurisé
         train_df, val_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df['code_str'])
         train_loader = DataLoader(CITPDataset(train_df, ft_model, le), batch_size=32, shuffle=True)
         
@@ -96,8 +146,6 @@ def train_main():
         }
         torch.save(state, SAVED_MODEL_PATH)
 
-        # Sur GitHub, on log le modèle dans les artifacts de l'expérience
-        # On ne tente l'enregistrement Registry (registered_model_name) QUE si on est en local
         if not IS_GITHUB:
             mlflow.pytorch.log_model(
                 pytorch_model=model,
