@@ -12,13 +12,14 @@ from tqdm import tqdm
 # On utilise r"" pour éviter l'erreur 'unicodeescape'
 import os
 
-# 1. On définit la racine du projet dynamiquement
-# Cette commande trouve automatiquement le dossier où se trouve le script
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# 1. Trouve le dossier où est le script (scripts/)
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+# 2. Remonte à la racine du projet (project_torch_classifier/)
+BASE_DIR = os.path.dirname(CURRENT_DIR)
 
 # 2. Configuration des chemins RELATIFS
 # On part de la racine du projet pour descendre dans les dossiers
-FASTTEXT_MODEL_PATH = os.path.join(BASE_DIR, "modelsfastext", "cc.fr.300.bin")
+FASTTEXT_MODEL_PATH = os.path.join(BASE_DIR, "models_fasttext", "cc.fr.300.bin")
 SAVED_MODEL_PATH = os.path.join(BASE_DIR, "models", "citp_classifier_model.pth")
 
 # Dossier de données
