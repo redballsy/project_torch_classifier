@@ -18,3 +18,10 @@ models_fasttext/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+
+mlruns/
+mlruns_old/
+models/*.pth
+models_fasttext/
+__pycache__/
+.ipynb_checkpoints/
