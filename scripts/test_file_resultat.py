@@ -1,4 +1,3 @@
-# scripts/test_file_output.py
 import os
 import pandas as pd
 import torch

@@ -1,4 +1,4 @@
-name: Train CITP Model
+name: Train CITP Model with MLOps
 
 on:
   push:
@@ -11,21 +11,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    - name: 📂 Checkout code
+      uses: actions/checkout@v4
 
-    - name: Set up Python
+    - name: 🐍 Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
+        cache: 'pip' # Accélère les installations futures
 
-    - name: Install Dependencies
+    - name: 🛠️ Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        # Installation de PyTorch version CPU (plus léger pour le serveur)
-        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-        # Installation des dépendances data et ML
-        pip install pandas scikit-learn transformers openpyxl mlflow torchtext pytorch-lightning torchmetrics matplotlib fasttext-wheel
+        # Installation de PyTorch CPU (indispensable pour les serveurs sans carte graphique)
+        pip install torch --index-url https://download.pytorch.org/whl/cpu
+        # Installation des outils data et MLOps
+        pip install pandas scikit-learn openpyxl mlflow fasttext-wheel tqdm
 
     - name: 💾 Cache FastText Model
       id: cache-fasttext
@@ -38,24 +39,30 @@ jobs:
       if: steps.cache-fasttext.outputs.cache-hit != 'true'
       run: |
         mkdir -p models_fasttext
-        echo "Modèle non trouvé en cache. Téléchargement de cc.fr.300.bin (4.5 Go)..."
+        echo "📥 Téléchargement du modèle FastText (4.5 Go)..."
         curl -L https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fr.300.bin.gz -o models_fasttext/cc.fr.300.bin.gz
+        echo "📂 Décompression..."
         gunzip models_fasttext/cc.fr.300.bin.gz
-        echo "Téléchargement et décompression terminés."
 
-    - name: Run Training
+    - name: 🚀 Run Training with MLflow
       run: |
-        # Crée le dossier de sortie si nécessaire
+        # Préparation des dossiers
         mkdir -p models
+        mkdir -p mlruns
+        
         # Lancement de l'entraînement
+        # Note : Le script train.py détectera qu'il est sur GitHub et s'adaptera
         python scripts/train.py
+      env:
+        # On force MLflow à enregistrer localement dans le dossier mlruns
+        MLFLOW_TRACKING_URI: ./mlruns
 
-    - name: 📦 Upload Trained Model Assets
+    - name: 📦 Upload MLOps Assets (Model + MLflow Logs)
       if: success()
       uses: actions/upload-artifact@v4
       with:
-        name: CITP-Model-Package
+        name: MLOps-Experiment-Package
         path: |
           models/citp_classifier_model.pth
-          lightning_logs/
+          mlruns/
         retention-days: 7
