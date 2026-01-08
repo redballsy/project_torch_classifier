@@ -7,9 +7,12 @@ venv/
 models/
 lightning_logs/
 *.ckpt
-*.xlsx
 *.csv
 models_fasttext/
+
+# Fichiers Excel : on ignore tout SAUF celui nécessaire à l'entraînement
+*.xlsx
+!torchTestClassifiers/data/entrainer/entrainer2_propre.xlsx
 
 # Python
 __pycache__/
