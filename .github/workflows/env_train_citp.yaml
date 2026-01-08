@@ -22,25 +22,28 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        # Installation de PyTorch version CPU (plus léger pour le serveur)
         pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-        # Installation des autres dépendances avec fasttext-wheel pour éviter les erreurs de compilation
         pip install pandas scikit-learn transformers openpyxl mlflow torchtext pytorch-lightning torchmetrics matplotlib fasttext-wheel
 
     - name: 📥 Download FastText Model
       run: |
-        # Création du dossier avec ton orthographe actuelle
         mkdir -p models_fasttext
         echo "Début du téléchargement du modèle FastText (4.5 Go)..."
-        # Téléchargement via curl
         curl -L https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fr.300.bin.gz -o models_fasttext/cc.fr.300.bin.gz
-        echo "Décompression du fichier..."
         gunzip models_fasttext/cc.fr.300.bin.gz
-        # Vérification finale
-        echo "Vérification du dossier :"
         ls -lh models_fasttext/
 
     - name: Run Training
       run: |
-        # On lance le script en utilisant les fichiers téléchargés
         python scripts/train.py
+
+    - name: 📦 Upload Trained Model Assets
+      if: always() # Sauvegarde même si l'entraînement est interrompu ou échoue
+      uses: actions/upload-artifact@v4
+      with:
+        name: citp-training-results
+        path: |
+          models/
+          lightning_logs/
+          mlruns/
+        retention-days: 5 # Garde le fichier 5 jours pour économiser de la place
