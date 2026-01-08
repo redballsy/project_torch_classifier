@@ -30,15 +30,15 @@ jobs:
     - name: 📥 Download FastText Model
       run: |
         # Création du dossier avec ton orthographe actuelle
-        mkdir -p modelsfastext
+        mkdir -p models_fasttext
         echo "Début du téléchargement du modèle FastText (4.5 Go)..."
         # Téléchargement via curl
-        curl -L https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fr.300.bin.gz -o modelsfastext/cc.fr.300.bin.gz
+        curl -L https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fr.300.bin.gz -o models_fasttext/cc.fr.300.bin.gz
         echo "Décompression du fichier..."
-        gunzip modelsfastext/cc.fr.300.bin.gz
+        gunzip models_fasttext/cc.fr.300.bin.gz
         # Vérification finale
         echo "Vérification du dossier :"
-        ls -lh modelsfastext/
+        ls -lh models_fasttext/
 
     - name: Run Training
       run: |

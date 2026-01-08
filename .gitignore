@@ -9,7 +9,7 @@ lightning_logs/
 *.ckpt
 *.xlsx
 *.csv
-modelsfastext/
+models_fasttext/
 
 # Python
 __pycache__/
