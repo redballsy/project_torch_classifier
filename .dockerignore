@@ -1,0 +1,21 @@
+# Ne pas copier l'environnement virtuel (très lourd)
+text_classifier_env/
+venv/
+env/
+
+# Ne pas copier l'historique Git
+.git/
+.github/
+
+# Ne pas copier les dossiers de logs et de stockage local MLflow
+mlruns/
+mlruns_old*/
+lightning_logs/
+
+# Ne pas copier les fichiers temporaires Python
+**/__pycache__/
+*.pyc
+
+# Ne pas copier les gros fichiers Excel de test (sauf si tu en as besoin)
+*.xlsx
+!torchTestClassifiers/data/entrainer/propre.xlsx

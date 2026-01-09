@@ -26,4 +26,4 @@ pydantic==2.12.5
 
 # --- Portfolio dependency ---
 # Note: Cette ligne installe ton propre code comme un package
--e git+https://github.com/redballsy/portfolio.git@d496e70cde9a2aa2b8f1c7a97946405cc354206d#egg=torchTextClassifiers&subdirectory=project_torch_classifier
+#-e git+https://github.com/redballsy/portfolio.git@d496e70cde9a2aa2b8f1c7a97946405cc354206d#egg=torchTextClassifiers&subdirectory=project_torch_classifier

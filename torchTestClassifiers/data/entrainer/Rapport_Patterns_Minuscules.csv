@@ -1,0 +1,13 @@
+ligne;id;nomenclature;pattern;type;ancien_code;nouveau_code
+4423;72115;ms;1;deux_lettres_minuscules;3522;NC
+5960;78564;ts;1;deux_lettres_minuscules;3123;NC
+9538;50204;m.o;2;lettre_point_lettre_minuscules;9629;NC
+13337;58015;ouv;7;trois_lettres_minuscules;9211;NC
+13588;18377;boy;7;trois_lettres_minuscules;9121;NC
+23615;10434;ass;7;trois_lettres_minuscules;4312;NC
+26491;41030;ep;1;deux_lettres_minuscules;3359;NC
+31892;69192;sav;7;trois_lettres_minuscules;3322;NC
+45274;46473;hse;7;trois_lettres_minuscules;1223;NC
+81450;45811;ias;7;trois_lettres_minuscules;3339;NC
+81804;17902;bac;7;trois_lettres_minuscules;3119;NC
+81905;51660;man;7;trois_lettres_minuscules;9329;NC

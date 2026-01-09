@@ -1,27 +1,29 @@
-# Environnement virtuel
+# --- ENVIRONNEMENTS ---
 text_classifier_env/
 venv/
 .env
 
-# Modèles et données (Trop lourds / Confidentiels)
+# --- MODÈLES (Trop lourds pour GitHub) ---
+# On ignore les dossiers complets
 models/
+models_fasttext/
 lightning_logs/
 *.ckpt
-*.csv
-models_fasttext/
+*.pth
+*.bin
 
-# Fichiers Excel : on ignore tout SAUF celui nécessaire à l'entraînement
+# --- DONNÉES ---
+# On ignore tout l'Excel par défaut
 *.xlsx
+# On autorise uniquement le fichier spécifique d'entraînement
 !torchTestClassifiers/data/entrainer/entrainer2_propre.xlsx
 
-# Python
+# --- MLFLOW ---
+mlruns/
+mlruns_old*/
+
+# --- TEMP / PYTHON ---
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
-
-mlruns/
-mlruns_old/
-models/*.pth
-models_fasttext/
-__pycache__/
-.ipynb_checkpoints/
+tester/

@@ -1,0 +1,25 @@
+ligne;id;nomenclature;pattern;type;ancien_code;nouveau_code
+1862;74400;T. A;2;lettre_point_espace_lettre;8341;NC
+9436;81813;M O;4;lettre_espace_lettre;9629;NC
+9466;50119;M. O;2;lettre_point_espace_lettre;9629;NC
+9470;50129;M.O;3;lettre_point_lettre;NC;NC
+9471;50130;M.O;3;lettre_point_lettre;NC;NC
+9537;81815;M.O;3;lettre_point_lettre;NC;NC
+20715;74397;T S;4;lettre_espace_lettre;5414;NC
+20716;74402;T. S;2;lettre_point_espace_lettre;5414;NC
+20717;74405;T.S;3;lettre_point_lettre;NC;NC
+20718;74868;T.S;3;lettre_point_lettre;NC;NC
+25278;36419;D.E;3;lettre_point_lettre;NC;NC
+27075;35401;D G;4;lettre_espace_lettre;3343;NC
+27077;35431;D. G;2;lettre_point_espace_lettre;3343;NC
+41106;74442;T. DE S;1;lettre_point_mot_lettre;2330;NC
+45604;18896;C E;4;lettre_espace_lettre;1219;NC
+45605;18954;C.E;3;lettre_point_lettre;NC;NC
+55284;68853;S.EN;5;mot_point_mot;2132;NC
+78576;18913;C.B;3;lettre_point_lettre;NC;NC
+79073;41636;F E;4;lettre_espace_lettre;3119;NC
+79367;55652;O  D;4;lettre_espace_lettre;3339;NC
+79368;59310;O D;4;lettre_espace_lettre;3339;NC
+79587;68822;S E;4;lettre_espace_lettre;3119;NC
+79589;68861;S.E;3;lettre_point_lettre;NC;NC
+81148;68199;RH.COM;5;mot_point_mot;1212;NC
