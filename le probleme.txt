@@ -1,0 +1,26 @@
+Le Problème Racine :
+FastText généraliste (cc.fr.300.bin) :
+
+Formé sur Wikipédia, journaux, web général
+
+Ne connaît PAS votre vocabulaire métier spécifique CITP
+
+Ne comprend pas les nuances professionnelles
+
+Divergence sémantique entre vos 3 sources :
+
+CITP_08.xlsx : Nomenclature officielle (langage formel, administratif)
+
+entrainer2_propre.xlsx : Données réelles (langage quotidien, varié)
+
+topredict.xlsx : Nouvelles données (mélange des deux)
+
+Jeux de mots différents pour le même concept :
+Exemple :
+
+CITP_08 : "Technicien en maintenance industrielle"
+
+Données réelles : "Mécanicien d'usine", "Réparateur machine", "Technicien de maintenance"
+
+FastText généraliste : Ne fait PAS le lien entre ces termes
+
